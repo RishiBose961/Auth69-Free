@@ -4,6 +4,7 @@ import QRSession from "../models/qrSession.model.js";
 import User from "../models/user.model.js";
 import AuditLog from "../models/auditLog.model.js";
 import notificationService from "./notification.service.js";
+import deviceService from "./device.service.js";
 import { generateToken } from "../../utils/jwt.utils.js";
 
 export class QRService {
@@ -11,7 +12,7 @@ export class QRService {
    * Generates a new WhatsApp-style QR login session.
    * Can be used completely standalone to produce base64 PNG QR codes.
    */
-  async createSession(ipAddress = "127.0.0.1", userAgent = "Web Browser") {
+  async createSession(ipAddress = "127.0.0.1", userAgent = "Web Browser", deviceId = null) {
     const qrId = randomUUID();
     const rawPayload = `auth69://qr-login?qrId=${qrId}&ts=${Date.now()}`;
 
@@ -32,6 +33,7 @@ export class QRService {
 
     const session = await QRSession.create({
       qrId,
+      deviceId: deviceId || qrId,
       rawPayload,
       qrCodeDataUrl,
       status: "PENDING",
@@ -141,6 +143,16 @@ export class QRService {
           userAgent: session.userAgent,
         });
       }
+    } catch {}
+
+    try {
+      await deviceService.trackDevice({
+        userId: finalUser.id,
+        userEmail: finalUser.email,
+        deviceId: session.deviceId || session.qrId,
+        userAgent: session.userAgent,
+        ipAddress: session.ipAddress,
+      });
     } catch {}
 
     try {

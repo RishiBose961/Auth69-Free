@@ -4,8 +4,9 @@ export const createQRSession = async (req, res) => {
   try {
     const ipAddress = req.ip || req.headers["x-forwarded-for"] || "127.0.0.1";
     const userAgent = req.headers["user-agent"] || "Web Browser";
+    const deviceId = req.headers["x-device-id"] || req.body?.deviceId;
 
-    const session = await qrService.createSession(ipAddress, userAgent);
+    const session = await qrService.createSession(ipAddress, userAgent, deviceId);
     return res.status(200).json({
       success: true,
       data: session,
