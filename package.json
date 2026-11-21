@@ -1,0 +1,15 @@
+{
+  "name": "auth69",
+  "version": "1.0.0",
+  "description": "Auth69 End-to-End Authentication System with 2-Step Verification and Mobile Companion",
+  "scripts": {
+    "start:server": "npm --prefix auth69server run start",
+    "dev:server": "npm --prefix auth69server run dev",
+    "start:socket": "npm --prefix auth69socket run start",
+    "dev:socket": "npm --prefix auth69socket run dev",
+    "start:web": "npm --prefix auth69web run dev",
+    "start:mob": "npm --prefix auth69mob run start",
+    "test:e2e": "npm --prefix auth69server run test:e2e",
+    "test:qr": "node auth69server/src/qr-login-test.js"
+  }
+}
